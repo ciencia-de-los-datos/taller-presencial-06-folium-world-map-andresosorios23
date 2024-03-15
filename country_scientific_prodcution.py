@@ -5,7 +5,7 @@ import folium
 
 
 def load_affiliations() -> pd.DataFrame:
-    """Load affiliations"""
+
     data = pd.read_csv(
         "https://raw.githubusercontent.com/jdvelasq/datalabs/master/datasets/scopus-papers.csv",
         sep=",",
@@ -14,14 +14,14 @@ def load_affiliations() -> pd.DataFrame:
 
 
 def remove_na_affiliations(data: pd.DataFrame) -> pd.DataFrame:
-    """Remove NA affiliations"""
+
     dataframe = data.copy()
     dataframe = dataframe.dropna(subset=["Affiliations"])
     return dataframe
 
 
 def create_countries_column(data: pd.DataFrame) -> pd.DataFrame:
-    """Create countries column"""
+
     dataframe = data.copy()
     dataframe["countries"] = dataframe["Affiliations"].apply(
         lambda x: ", ".join(list(set([y.split(",")[-1].strip() for y in x.split(";")])))
@@ -30,7 +30,7 @@ def create_countries_column(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_countries(data: pd.DataFrame) -> pd.DataFrame:
-    """Clean countries"""
+
     dataframe = data.copy()
     dataframe["countries"] = dataframe["countries"].apply(
         lambda x: x.replace("United States", "United States of America")
@@ -39,12 +39,12 @@ def clean_countries(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def save_csv(data: pd.DataFrame, filename: str) -> None:
-    """Save data to csv"""
+
     data.to_csv(filename, index=False)
 
 
 def count_countries(data: pd.DataFrame) -> pd.DataFrame:
-    """Count countries"""
+
     dataframe = data.copy()
     dataframe = (
         dataframe["countries"].str.split(", ").explode().value_counts().reset_index()
@@ -54,7 +54,7 @@ def count_countries(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def create_map(data):
-    """Create map"""
+
     world_map = folium.Map(location=[0, 0], zoom_start=2)
     folium.Choropleth(
         geo_data="https://raw.githubusercontent.com/python-visualization/folium/master/examples/data/world-countries.json",
@@ -71,8 +71,7 @@ def create_map(data):
 
 
 def main() -> None:
-    """Main function"""
-    # Load data
+
     data: pd.DataFrame = load_affiliations()
     data = remove_na_affiliations(data)
     data = create_countries_column(data)
